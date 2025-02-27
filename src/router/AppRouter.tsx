@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import { Layout } from "~/components/Layout";
+import { Layout } from "~/components/Layout/Layout";
 import { routes } from "~/global/config/routes.config";
 import { HomePage } from "~/pages/HomePage/HomePage";
 import { LoginPage } from "~/pages/LoginPage/LoginPage";

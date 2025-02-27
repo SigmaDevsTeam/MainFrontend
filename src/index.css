@@ -24,7 +24,6 @@ body,
 #root > div.radix-themes {
    height: 100%;
    display: flex;
-   /* grid-template-columns: 1fr 4fr; */
 }
 
 main {
