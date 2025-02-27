@@ -1,6 +1,4 @@
 import { Helmet } from "react-helmet-async";
-import { application } from "~/global/config/application.config";
-
 type HelmetXProps = {
    title?: string;
    description?: string;
@@ -30,7 +28,7 @@ function HelmetX({ title, description, robots, cannonicalPath }: HelmetXProps) {
          />
          <link
             rel="canonical"
-            href={`${application.DOCS_URL}${cannonicalPath}`}
+            href={`${import.meta.env.SABAODY_MAIN_URL}${cannonicalPath}`}
          />
       </Helmet>
    );
