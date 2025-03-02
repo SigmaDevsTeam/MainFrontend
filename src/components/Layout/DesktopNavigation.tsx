@@ -1,10 +1,11 @@
-import { Avatar, Button, Separator } from "@radix-ui/themes";
+import { Avatar, Badge, Button, Separator } from "@radix-ui/themes";
 import { NavLink } from "react-router";
 import { routes } from "~/global/config/routes.config";
 import { NavigationProps } from "./Layout";
 import { useAnimation } from "~/global/hooks/useAnimation";
 import { useAppSelector } from "~/store/store";
 import { GuideDiv } from "../theme/animation/GuideDiv";
+import toast from "react-hot-toast";
 
 function DesktopNavigation({ navigateToDocs }: NavigationProps) {
    const { step, setAnimation } = useAnimation();
@@ -87,6 +88,21 @@ function DesktopNavigation({ navigateToDocs }: NavigationProps) {
                   text="Analytics"
                   to={routes.analytics}
                />
+
+               <li className="relative">
+                  <Button
+                     variant="ghost"
+                     color="gray"
+                     className="!w-full !text-base !gap-4 !justify-start text-start"
+                     onClick={() => {
+                        toast.error("Pro users only");
+                     }}
+                  >
+                     <i className={`pi pi-history`} /> <span>History</span>{" "}
+                     <Badge color="yellow">Pro</Badge>
+                  </Button>
+               </li>
+
                <li className="-mx-2">
                   <Separator className="!w-full" />
                </li>

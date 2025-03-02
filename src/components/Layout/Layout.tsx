@@ -7,20 +7,21 @@ import { MobileNavigation } from "./MobileNavigation";
 import { DesktopNavigation } from "./DesktopNavigation";
 import { useEffect } from "react";
 import { useGetCurrentUserQuery } from "~/store/auth/auth.api";
-import { useAppDispatch} from "~/store/store";
+import { useAppDispatch } from "~/store/store";
 import { logout, setUser } from "~/store/auth/auth.slice";
 import { routes } from "~/global/config/routes.config";
 
 export function Layout() {
    const { data: userData, isLoading, isError } = useGetCurrentUserQuery();
    const dispatch = useAppDispatch();
-
+   console.log(isError);
+   console.log(userData);
    useEffect(() => {
       if (isLoading) dispatch(setUser("loading"));
       else if (userData) dispatch(setUser(userData));
       else if (isError) dispatch(setUser(null));
       else dispatch(logout());
-   }, [userData]);
+   }, [userData, isError, isLoading]);
 
    const navigate = useNavigate();
    useEffect(() => {

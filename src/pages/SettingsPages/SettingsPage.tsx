@@ -1,5 +1,6 @@
 import {
    Avatar,
+   Badge,
    Button,
    Card,
    Checkbox,
@@ -8,27 +9,22 @@ import {
    TextField
 } from "@radix-ui/themes";
 import { useMutation } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { Navigate } from "react-router";
 import { GuideDiv } from "~/components/theme/animation/GuideDiv";
 import { Modal } from "~/components/theme/Modal";
 import { apiWithCsrf } from "~/global/config/application.config";
+import { routes } from "~/global/config/routes.config";
 import { useAnimation } from "~/global/hooks/useAnimation";
 import { useCloseModal } from "~/global/hooks/useCloseModal";
 import { authApi } from "~/store/auth";
 import { useAppDispatch, useAppSelector } from "~/store/store";
+import { LoadingPage } from "../LoadingPage";
 
 function SettingsPage() {
    const user = useAppSelector((store) => store.auth.user);
 
    const { step } = useAnimation();
-
-   const buttonRef = useRef<HTMLButtonElement | null>(null);
-
-   const openModal = () => {
-      if (buttonRef.current) buttonRef.current.click();
-   };
-
-   const [prompt, setPrompt] = useState("");
 
    const [token, setToken] = useState("");
 
@@ -64,9 +60,9 @@ function SettingsPage() {
       }
    });
 
-   if (user === "loading") return <>loading</>;
+   if (user === "loading") return <LoadingPage />;
 
-   if (!user) return <>CAO</>;
+   if (!user) return <Navigate to={routes.login} />;
 
    const { username, image, email, doesTokenExist } = user;
    console.log(user);
@@ -76,32 +72,24 @@ function SettingsPage() {
          <h1 className="containerX text-center">Profile settings</h1>
          <p className="containerX text-center">Change your settings</p>
          <section className="containerX mt-4">
-            <div className="flex gap-1 max-w-[450px] mx-auto">
+            <div className="flex gap-1 max-w-[450px] mx-auto  relative">
+               <div className="absolute -top-2 -right-2">
+                  <Badge color="yellow" size="3">
+                     Pro
+                  </Badge>
+               </div>
                <TextArea
+                  disabled
                   className="!grow-1"
-                  placeholder="Create private repository with vite react typescript template"
-                  value={prompt}
-                  onChange={({ target }) => setPrompt(target.value)}
+                  placeholder="Create a new organization (Sigma Boys), send Artem and Vlad invitations"
                />
                <div className="flex flex-col gap-1">
-                  <Button disabled={prompt.length === 0} onClick={openModal}>
-                     Send
+                  <Button disabled>
+                     Send <i className="pi pi-lock" />
                   </Button>
-                  <Button
-                     variant="soft"
-                     color="gray"
-                     onClick={() => setPrompt("")}
-                  >
+                  <Button variant="soft" color="gray" disabled>
                      clear
                   </Button>
-                  <Modal
-                     trigger={
-                        <Button className="!hidden" ref={buttonRef}>
-                           Open
-                        </Button>
-                     }
-                     content={<>Yaaa</>}
-                  />
                </div>
             </div>
          </section>
@@ -173,17 +161,20 @@ function SettingsPage() {
                            <Modal.Title>
                               Are you sure you want to delete token?
                            </Modal.Title>
-                           <Modal.Close ref={closeDeleteTokenRef}>
-                              <Button color="gray" variant="soft">
-                                 Close
+                           <div className="flex gap-2 justify-center mt-4">
+                              <Modal.Close ref={closeDeleteTokenRef}>
+                                 <Button color="gray" variant="soft">
+                                    Close
+                                 </Button>
+                              </Modal.Close>
+                              <Button
+                                 color="red"
+                                 onClick={() => deleteToken()}
+                                 loading={isDeletePending}
+                              >
+                                 Delete
                               </Button>
-                           </Modal.Close>
-                           <Button
-                              onClick={() => deleteToken()}
-                              loading={isDeletePending}
-                           >
-                              Submit
-                           </Button>
+                           </div>
                         </>
                      }
                   />
