@@ -8,6 +8,7 @@ import { Modal } from "~/components/theme/Modal";
 import { apiWithCsrf } from "~/global/config/application.config";
 import toast from "react-hot-toast";
 import { useCloseModal } from "~/global/hooks/useCloseModal";
+import { useMutation } from "@tanstack/react-query";
 
 // function extractRepoInfo(str: string) {
 //    const isPrivate = /\b(private)\b/i.test(str);
@@ -29,7 +30,7 @@ function CreatePage() {
 
    const buttonRef = useRef<HTMLButtonElement | null>(null);
 
-   const { closeButtonRef } = useCloseModal();
+   const { closeButtonRef, closeModal } = useCloseModal();
 
    const openModal = () => {
       if (buttonRef.current) buttonRef.current.click();
@@ -44,15 +45,10 @@ function CreatePage() {
    const handleSend = () => {
       openModal();
    };
-
-   const [_, setIsLoding] = useState(false);
-
-   const submitHandle = async () => {
-      if (!repoName) {
-      }
-      setIsLoding(true);
+   const handleCreateProject = async () => {
       try {
-         const res = await apiWithCsrf.post("/createProject", {
+         console.log({ isPrivate, repoName, prompt });
+         const res = await apiWithCsrf.post("open-ai/createProject", {
             isPrivate,
             repoName,
             prompt
@@ -61,9 +57,16 @@ function CreatePage() {
          console.log(res);
       } catch (err) {
          toast.error(JSON.stringify(err).slice(0, 50));
+         console.log(err);
       }
-      setIsLoding(false);
    };
+
+   const { mutate, isPending } = useMutation({
+      mutationFn: handleCreateProject,
+      onSuccess: () => {
+         closeModal();
+      }
+   });
 
    if (user === "loading") return <LoadingPage />;
 
@@ -85,7 +88,11 @@ function CreatePage() {
                   onChange={({ target }) => setPrompt(target.value)}
                />
                <div className="flex flex-col gap-1">
-                  <Button disabled={prompt.length === 0} onClick={handleSend}>
+                  <Button
+                     disabled={prompt.length === 0}
+                     onClick={handleSend}
+                     loading={isPending}
+                  >
                      Send
                   </Button>
                   <Button
@@ -97,9 +104,7 @@ function CreatePage() {
                   </Button>
                   <Modal
                      trigger={
-                        <Button className="!hidden" ref={buttonRef}>
-                           Open
-                        </Button>
+                        <Button className="!hidden" ref={buttonRef}></Button>
                      }
                      content={
                         <>
@@ -130,7 +135,12 @@ function CreatePage() {
                                     Close
                                  </Button>
                               </Modal.Close>
-                              <Button onClick={submitHandle}>Submit</Button>
+                              <Button
+                                 onClick={() => mutate()}
+                                 loading={isPending}
+                              >
+                                 Submit
+                              </Button>
                            </div>
                         </>
                      }
@@ -140,6 +150,12 @@ function CreatePage() {
          </section>
          <section className="containerX mt-4">
             <div className="max-w-[600px] mx-auto">
+               {isPending && (
+                  <p className="flex gap-2 justify-center items-center">
+                     <span>Loading</span>{" "}
+                     <i className="pi pi-spinner pi-spin" />
+                  </p>
+               )}
                {/* <CodeResponse>git init bobr</CodeResponse>
                <LinkResponse link={"https://niggas"}>niggaImage</LinkResponse>
                <ParagraphResponse>

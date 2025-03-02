@@ -6,7 +6,7 @@ export type User = {
    username: string;
    email: string;
    image?: string;
-   isTokenExists: boolean;
+   doesTokenExist: boolean;
 };
 
 export type Csrf = {
@@ -20,7 +20,8 @@ export const authApi = createApi({
    baseQuery: baseQuery("/"),
    endpoints: (builder) => ({
       getCurrentUser: builder.query<User, void>({
-         query: () => ({ url: "currentAccount" })
+         query: () => ({ url: "users/currentAccount" }),
+         providesTags: ["User"]
       })
    })
 });

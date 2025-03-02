@@ -7,12 +7,15 @@ import {
    TextArea,
    TextField
 } from "@radix-ui/themes";
+import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { GuideDiv } from "~/components/theme/animation/GuideDiv";
 import { Modal } from "~/components/theme/Modal";
 import { apiWithCsrf } from "~/global/config/application.config";
 import { useAnimation } from "~/global/hooks/useAnimation";
-import { useAppSelector } from "~/store/store";
+import { useCloseModal } from "~/global/hooks/useCloseModal";
+import { authApi } from "~/store/auth";
+import { useAppDispatch, useAppSelector } from "~/store/store";
 
 function SettingsPage() {
    const user = useAppSelector((store) => store.auth.user);
@@ -29,15 +32,44 @@ function SettingsPage() {
 
    const [token, setToken] = useState("");
 
+   const { closeButtonRef: closeSubmitTokenRef, closeModal: closeSubmitToken } =
+      useCloseModal();
+
+   const { closeButtonRef: closeDeleteTokenRef, closeModal: closeDeleteToken } =
+      useCloseModal();
+
    const handleSubmitToken = async () => {
-      await apiWithCsrf.post("token", token);
+      await apiWithCsrf.post("users/token", { token });
    };
+
+   const dispatch = useAppDispatch();
+
+   const { mutate: submitToken, isPending: isSubmitPending } = useMutation({
+      mutationFn: handleSubmitToken,
+      onSuccess: () => {
+         dispatch(authApi.util.invalidateTags(["User"]));
+         closeSubmitToken();
+      }
+   });
+
+   const handleDeleteToken = async () => {
+      await apiWithCsrf.delete("users/token");
+   };
+
+   const { mutate: deleteToken, isPending: isDeletePending } = useMutation({
+      mutationFn: handleDeleteToken,
+      onSuccess: () => {
+         dispatch(authApi.util.invalidateTags(["User"]));
+         closeDeleteToken();
+      }
+   });
 
    if (user === "loading") return <>loading</>;
 
    if (!user) return <>CAO</>;
 
-   const { username, image, email, isTokenExists } = user;
+   const { username, image, email, doesTokenExist } = user;
+   console.log(user);
 
    return (
       <>
@@ -127,12 +159,35 @@ function SettingsPage() {
             </div>
             <div className="max-w-[550px] mx-auto flex gap-2 justify-between mt-4 flex-wrap">
                <div className="flex items-center gap-4">
-                  Github access token <Checkbox checked={isTokenExists} />
+                  Github access token <Checkbox checked={doesTokenExist} />
                </div>
                <div className="flex gap-2">
-                  <Button color="gray" variant="soft">
-                     Delete
-                  </Button>
+                  <Modal
+                     trigger={
+                        <Button color="gray" variant="soft">
+                           Delete
+                        </Button>
+                     }
+                     content={
+                        <>
+                           <Modal.Title>
+                              Are you sure you want to delete token?
+                           </Modal.Title>
+                           <Modal.Close ref={closeDeleteTokenRef}>
+                              <Button color="gray" variant="soft">
+                                 Close
+                              </Button>
+                           </Modal.Close>
+                           <Button
+                              onClick={() => deleteToken()}
+                              loading={isDeletePending}
+                           >
+                              Submit
+                           </Button>
+                        </>
+                     }
+                  />
+
                   <GuideDiv active={step === 2} isNextStep>
                      <Modal
                         trigger={<Button>Set new</Button>}
@@ -166,11 +221,18 @@ function SettingsPage() {
                                  />
                                  <div className="flex gap-2">
                                     <Modal.Close>
-                                       <Button color="gray" variant="soft">
+                                       <Button
+                                          color="gray"
+                                          variant="soft"
+                                          ref={closeSubmitTokenRef}
+                                       >
                                           Close
                                        </Button>
                                     </Modal.Close>
-                                    <Button onClick={handleSubmitToken}>
+                                    <Button
+                                       onClick={() => submitToken()}
+                                       loading={isSubmitPending}
+                                    >
                                        Submit
                                     </Button>
                                  </div>
