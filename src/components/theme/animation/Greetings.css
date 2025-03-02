@@ -1,0 +1,135 @@
+/* greetings */
+
+@keyframes greetings-animation {
+   0% {
+      opacity: 0;
+   }
+
+   12.5% {
+      opacity: 100;
+   }
+
+   75% {
+      opacity: 100;
+   }
+
+   100% {
+      opacity: 87.5%;
+   }
+}
+
+@keyframes greetings-guide {
+   0% {
+      opacity: 87.5%;
+   }
+
+   100% {
+      opacity: 62.5%;
+   }
+}
+
+.greetings {
+   @apply w-screen h-screen fixed;
+   inset: 0;
+}
+
+.greetings-overlay {
+   animation: greetings-animation 4s ease forwards;
+   background: var(--color-background);
+   @apply w-screen h-screen absolute;
+   inset: 0;
+}
+
+.greetings-guide-overlay {
+   animation: greetings-guide 0.75s ease forwards;
+}
+
+@keyframes appear-from-bottom {
+   0% {
+      opacity: 0;
+      transform: translateY(25px);
+   }
+
+   100% {
+      opacity: 100;
+      transform: translateY(0);
+   }
+}
+
+@keyframes appear-size {
+   0% {
+      opacity: 0;
+      transform: scale(0.9, 0.9);
+   }
+
+   50% {
+      transform: scale(1.2, 1.2);
+   }
+
+   100% {
+      opacity: 100;
+      transform: scale(1, 1);
+   }
+}
+
+.greetings-content {
+   @apply fixed h-screen left-1/2 -translate-x-1/2 flex flex-col items-center;
+}
+
+.greetings-content > * {
+   text-align: center;
+}
+
+.greetings-content > h1 {
+   animation: appear-from-bottom 1s ease-in-out forwards;
+}
+
+.greetings-content > p {
+   margin-top: 10rem;
+   opacity: 0;
+   animation: appear-from-bottom 1s ease-in-out forwards;
+   animation-delay: 1s;
+}
+
+.greetings-content > .greetings-gui {
+   margin-top: 4rem;
+   opacity: 0;
+   animation: appear-from-bottom 1s ease-in-out forwards;
+   animation-delay: 2.5s;
+}
+
+.greetings-content > .guide {
+   animation: appear-from-bottom 0.75s ease-in-out forwards;
+}
+
+/* end-greetings */
+
+@keyframes end-greetings-animation {
+   0% {
+      opacity: 1;
+   }
+
+   100% {
+      opacity: 0;
+   }
+}
+
+@keyframes disappear-upwards {
+   0% {
+      opacity: 1;
+      transform: translateY(0);
+   }
+   100% {
+      opacity: 0;
+      transform: translateY(-35px);
+   }
+}
+
+.end-greetings {
+   opacity: 1;
+   animation: end-greetings-animation 0.75s ease-in-out forwards;
+}
+
+.end-content > * {
+   animation: disappear-upwards 0.75s ease-in-out forwards !important;
+}
