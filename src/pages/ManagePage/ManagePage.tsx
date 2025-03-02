@@ -13,7 +13,7 @@ function ManagePage() {
 
    const getAllRepos = async () => {
       try {
-         const res = await apiWithCsrf.get("/repositories");
+         const res = await apiWithCsrf.get("/open-ai/repos");
          return res.data as RepoCardProps[];
       } catch (err) {
          toast.error(JSON.stringify(err).slice(0, 50));
@@ -60,15 +60,15 @@ function ManagePage() {
          </section>
          <section className="containerX mt-8">
             <div className="max-w-[600px] mx-auto">
-               <ul>
+               <ul className="flex flex-col gap-4">
                   {isPending && (
                      <p className="flex justify-center">
                         <i className="pi pi-spinner pi-spin" />
                      </p>
                   )}
                   {data &&
-                     data.map((repo) => (
-                        <li>
+                     data.map((repo, i) => (
+                        <li key={i}>
                            <RepoCard {...repo} />
                         </li>
                      ))}

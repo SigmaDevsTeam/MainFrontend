@@ -49,7 +49,7 @@ function Greetings() {
                   Welcome to <em className="text-(--accent-10)">Sabaody</em>
                </h1>
                <p className="text-2xl sm:text-3xl">
-                  The <b>solution</b> you were looking for
+                  Start writing logic, not boilerplate
                </p>
                <div className="greetings-gui flex gap-2 justify-center">
                   <Button onClick={nextStep} size="3">

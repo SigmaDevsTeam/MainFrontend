@@ -10,25 +10,9 @@ import {
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const DonutChart = () => {
+const DonutChart = ({ languages }: { languages: ChartData<"doughnut"> }) => {
    // Define types for data and options
-   const data: ChartData<"doughnut"> = {
-      labels: ["JavaScript", "Python", "Java", "C++", "Go"],
-      datasets: [
-         {
-            label: "Usage",
-            data: [40, 25, 15, 10, 10],
-            backgroundColor: [
-               "#f1e05a",
-               "#3572A5",
-               "#b07219",
-               "#f34b7d",
-               "#00ADD8"
-            ],
-            borderWidth: 1
-         }
-      ]
-   };
+   const data: ChartData<"doughnut"> = languages;
 
    const options: ChartOptions<"doughnut"> = {
       responsive: true,

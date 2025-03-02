@@ -9,6 +9,7 @@ import { apiWithCsrf } from "~/global/config/application.config";
 import toast from "react-hot-toast";
 import { useCloseModal } from "~/global/hooks/useCloseModal";
 import { useMutation } from "@tanstack/react-query";
+import { CodeCard } from "~/components/CodeCard";
 
 // function extractRepoInfo(str: string) {
 //    const isPrivate = /\b(private)\b/i.test(str);
@@ -54,14 +55,15 @@ function CreatePage() {
             prompt
          });
          toast.success("Repository successfully created");
-         console.log(res);
+         console.log(res.data);
+         return res.data;
       } catch (err) {
          toast.error(JSON.stringify(err).slice(0, 50));
          console.log(err);
       }
    };
 
-   const { mutate, isPending } = useMutation({
+   const { mutate, isPending, data, isError } = useMutation({
       mutationFn: handleCreateProject,
       onSuccess: () => {
          closeModal();
@@ -156,38 +158,50 @@ function CreatePage() {
                      <i className="pi pi-spinner pi-spin" />
                   </p>
                )}
-               {/* <CodeResponse>git init bobr</CodeResponse>
-               <LinkResponse link={"https://niggas"}>niggaImage</LinkResponse>
-               <ParagraphResponse>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio
-                  obcaecati enim quidem repellat molestiae nulla modi ipsam
-                  dolor illum sapiente provident ut eligendi, facilis iure
-                  doloremque expedita illo minus incidunt voluptate facere, rem
-                  adipisci. Inventore facere perspiciatis cumque ipsum ipsam?
-               </ParagraphResponse>
-               <SuccessResponse />
-               <ErrorResponse /> */}
+               {isError && (
+                  <div className="mt-2">
+                     <ErrorResponse />
+                  </div>
+               )}
+               {data && (
+                  <>
+                     <div className="mt-2">
+                        <SuccessResponse />
+                     </div>
+                     <div className="mt-2">
+                        <a
+                           href={data + "/tree/new-feature"}
+                           className="text-(--accent-9)"
+                        >
+                           <u>{data}</u>
+                        </a>
+                     </div>
+                     <div className="mt-2">
+                        <CodeCard>git clone {data}</CodeCard>
+                     </div>
+                  </>
+               )}
             </div>
          </section>
       </>
    );
 }
 
-// function SuccessResponse() {
-//    return (
-//       <p className="text-(--green-10)">
-//          <i className="pi pi-check-circle" /> Success
-//       </p>
-//    );
-// }
+function SuccessResponse() {
+   return (
+      <p className="text-(--green-10)">
+         <i className="pi pi-check-circle" /> Success
+      </p>
+   );
+}
 
-// function ErrorResponse() {
-//    return (
-//       <p className="text-(--red-10)">
-//          <i className="pi pi-times-circle" /> Success
-//       </p>
-//    );
-// }
+function ErrorResponse() {
+   return (
+      <p className="text-(--red-10)">
+         <i className="pi pi-times-circle" /> Failed to create repository
+      </p>
+   );
+}
 
 // function LinkResponse({
 //    children,
@@ -203,7 +217,5 @@ function CreatePage() {
 //       </a>
 //    );
 // }
-
-
 
 export { CreatePage };

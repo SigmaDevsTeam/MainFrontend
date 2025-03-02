@@ -60,6 +60,17 @@ function SettingsPage() {
       }
    });
 
+   const handleLogout = async () => {
+      await apiWithCsrf.get("/logout");
+   };
+
+   const { mutate: logoutUser, isPending: isLgginOut } = useMutation({
+      mutationFn: handleLogout,
+      onSuccess: () => {
+         dispatch(authApi.util.invalidateTags(["User"]));
+      }
+   });
+
    if (user === "loading") return <LoadingPage />;
 
    if (!user) return <Navigate to={routes.login} />;
@@ -104,7 +115,9 @@ function SettingsPage() {
                   />
                   <div className="flex flex-col gap-1 mt-2 items-center">
                      <p>{username}</p>
-                     <small>{email}</small>
+                     <small>
+                        {email.slice(0, 8) + "..." + email.slice(-10)}
+                     </small>
                      <div className="bg-(--gray-3) py-1 px-4 rounded-full">
                         Free plan
                      </div>
@@ -233,6 +246,16 @@ function SettingsPage() {
                      />
                   </GuideDiv>
                </div>
+            </div>
+            <div className="flex justify-end max-w-[550px] mx-auto mt-4">
+               <Button
+                  onClick={() => logoutUser()}
+                  loading={isLgginOut}
+                  variant="soft"
+                  color="gray"
+               >
+                  Logout
+               </Button>
             </div>
          </section>
       </>
