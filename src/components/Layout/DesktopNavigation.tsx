@@ -7,7 +7,7 @@ import { useAppSelector } from "~/store/store";
 import { GuideDiv } from "../theme/animation/GuideDiv";
 import toast from "react-hot-toast";
 
-function DesktopNavigation({ navigateToDocs }: NavigationProps) {
+function DesktopNavigation({ navigateToDocs: _ }: NavigationProps) {
    const { step, setAnimation } = useAnimation();
    const user = useAppSelector((store) => store.auth.user);
 
@@ -129,12 +129,11 @@ function DesktopNavigation({ navigateToDocs }: NavigationProps) {
                      variant="ghost"
                      color="gray"
                      className="!text-base !w-full"
-                     onClick={navigateToDocs}
+                     onClick={() => {
+                        toast.error("Documentation is not available yet!");
+                     }}
                   >
-                     <b className="font-Montserrat">
-                        <span className="text-(--gray-12)">Sabaody</span>{" "}
-                        <span className="text-(--indigo-10)">Docs</span>
-                     </b>
+                     <b className="font-Montserrat">Documentation</b>
                   </Button>
                </li>
 

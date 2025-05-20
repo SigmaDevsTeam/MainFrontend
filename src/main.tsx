@@ -15,7 +15,7 @@ function App() {
    return (
       <QueryClientProvider client={queryClient}>
          <Provider store={store}>
-            <Theme appearance="dark" accentColor="blue">
+            <Theme appearance="dark" accentColor="crimson" radius="full">
                <HelmetProvider>
                   <AppRouter />
                </HelmetProvider>

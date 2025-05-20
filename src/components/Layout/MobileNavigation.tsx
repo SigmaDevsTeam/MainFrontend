@@ -5,9 +5,7 @@ import { NavigationProps } from "./Layout";
 import { Popup } from "../theme/Popup";
 import { useAppSelector } from "~/store/store";
 
-function MobileNavigation({
-   navigateToDocs,
-}: NavigationProps) {
+function MobileNavigation({ navigateToDocs }: NavigationProps) {
    const user = useAppSelector((store) => store.auth.user);
    const bottomUlGen = () => {
       if (user === "loading") {
@@ -16,10 +14,10 @@ function MobileNavigation({
                <Button
                   variant="ghost"
                   color="gray"
-                  className="!w-full !text-base !gap-4"
+                  className="!w-full !text-base"
                   disabled
                >
-                  <i className="pi pi-spinner pi-spin" /> loading
+                  <i className="pi pi-spinner pi-spin" />
                </Button>
             </>
          );
